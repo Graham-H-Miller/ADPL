@@ -1,14 +1,7 @@
 PARTICLE = particle
 SRC_DIR_PREFIX = ADPL_
 TARGET_VERSION = 0.5.3
-DEVICE_ID = ADPLDuke6191
-# ADPLDuke0785
-# ADPLindia2723
-# ADPLindia3847
-# ADPLKenyaCentral9822
-# ADPLKenyaNorth0437
-# ADPLPhilippinesSagay3904
-# ADPLPhilippinesSubayon1817
+DEVICE_ID = ADPLDuke0785
 
 compile-electron:
 	$(PARTICLE) compile electron $(SRC_DIR_PREFIX)electron
