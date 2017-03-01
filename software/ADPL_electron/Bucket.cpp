@@ -27,7 +27,6 @@ double Bucket::updateFlow(){
     else{
         flow_rate = 4*(bucket_array[5]-bucket_array[0]);
     }
-    return flow_rate;
 }
 
 void Bucket::publish() {

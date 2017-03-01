@@ -53,17 +53,20 @@ int temp_count = 1;
 void setup() {
     Serial.begin(9600);
     Particle.variable("currentTime", currentTime);
-    // count bucket tips on one-shot rise
-    attachInterrupt(BUCKET, bucket_tipped, RISING);
+
     // collect the system firmware version to fetch OTA
     SYS_VERSION = System.versionNumber();
     Particle.variable("SYS_VERSION", SYS_VERSION);
+
+    // count bucket tips on one-shot rise
+    attachInterrupt(BUCKET, bucket_tipped, RISING);
+
+    // respond to push button interface
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
 }
 
 void loop() {
-    // read the push buttons
     currentTime = millis();
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
