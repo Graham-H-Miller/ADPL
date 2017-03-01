@@ -9,12 +9,12 @@ class Bucket {
         void tipped();
         unsigned int tip_count;
         void publish();
-        double updateFlow();
-        double flow_rate;
+        void update();
+        double flow_rate = 0;
+        unsigned long time_last_measured;
     private:
-        static constexpr _NUMSAMPLES int 6; //number of samples of bucket data
+        static constexpr int _NUMSAMPLES = 6; //number of samples of bucket data
         double _bucket_array[_NUMSAMPLES]; //array to read and average over
-
         int iter;
 };
 

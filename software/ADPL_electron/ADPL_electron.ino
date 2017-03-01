@@ -15,6 +15,7 @@ SYSTEM_THREAD(ENABLED);  // parallel user and system threads
 unsigned long SYS_VERSION;
 
 #define PUBLISH_DELAY 150000  // 2.5 min b/w variable publish
+#define FLOW_DELAY 1000     // 2.5 min b/w flow calculations
 
 #include "pin_mapping.h"
 
@@ -27,6 +28,7 @@ TempProbe tempHXHO("HXHO", HXHO);
 
 #include "Valve.h"
 Valve valve(VALVE);
+
 #include "Ignitor.h"
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
@@ -42,7 +44,7 @@ Pump pump(PUMP);
 Bucket bucket(BUCKET);
 
 #include "PinchValve.h"
-PinchValve pinchValve(DIR, STEP, SLEEP);
+PinchValve pinchvalve(DIR, STEP, SLEEP);
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -72,10 +74,14 @@ void loop() {
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
 
+    // publish last publish data if greater than last publish time
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         last_publish_time = publish_data(last_publish_time);
     }
 
+    if ((currentTime - bucket.time_last_measured) > FLOW_DELAY) {
+        bucket.update();
+    }
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         valve.open();
@@ -83,6 +89,7 @@ void loop() {
         ignitor.fire();
     }
 
+    // turn off gas valve if greater than high temp
     if(valve.gasOn) {
         currentTime = millis();
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
@@ -94,21 +101,23 @@ void loop() {
         }
     }
 
+    // start pumping if both off and greater than off time
     currentTime = millis();
     if (!pump.pumping && (currentTime - pump.offTime) > KEEP_PUMP_OFF_TIME) {
         pump.turnOn();
     }
+    // if on keep on until past on time
     else if (pump.pumping) {
         if ((currentTime - pump.onTime) > KEEP_PUMP_ON_TIME) {
             pump.turnOff();
         }
     }
 
-    if(pinchValve.down) {
-        pinchValve.shiftDown();
+    if(pinchvalve.down) {
+        pinchvalve.shiftDown();
     }
-    if(pinchValve.up) {
-        pinchValve.shiftUp();
+    if(pinchvalve.up) {
+        pinchvalve.shiftUp();
     }
 }
 
@@ -168,10 +177,11 @@ int publish_data(int last_publish_time) {
     return last_publish_time;
 }
 
+
 void up_pushed() {
-    pinchValve.up = true;
+    pinchvalve.up = true;
 }
 
 void down_pushed(){
-    pinchValve.down = true;
+    pinchvalve.down = true;
 }
