@@ -17,7 +17,7 @@ PinchValve::PinchValve(int dir_pin, int step_pin, int sleep_pin) {
     digitalWrite(_sleep_pin, LOW);
     bool up = false;
     bool down = false;
-    Particle.variable("position", (int) position)
+    Particle.variable("quarters", (int) quarter_turns);
 }
 
 void PinchValve::shiftUp() {
@@ -31,9 +31,9 @@ void PinchValve::shiftUp() {
         delay(_DELAY);
     };
     up = false;
-    position += 1;
+    quarter_turns += 1;
     digitalWrite(_sleep_pin, LOW);
-};
+}
 
 void PinchValve::shiftDown() {
     // shifts the linear step motor a full quarter turn down, closing valve
@@ -46,6 +46,6 @@ void PinchValve::shiftDown() {
         delay(_DELAY);
     };
     down = false;
-    position -= 1;
+    quarter_turns -= 1;
     digitalWrite(_sleep_pin, LOW);
-};
+}

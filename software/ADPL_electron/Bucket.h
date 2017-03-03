@@ -10,7 +10,7 @@ class Bucket {
         unsigned int tip_count;
         void publish();
         void update();
-        double flow_rate = 0;
+        double flow_rate = 0.0;
         unsigned long time_last_measured;
     private:
         static constexpr int _NUMSAMPLES = 6; //number of samples of bucket data

@@ -9,6 +9,7 @@ Bucket::Bucket(int pin) {
     pinMode(pin, INPUT_PULLDOWN);
     unsigned int tip_count = 0;
     Particle.variable("bucket", (int) tip_count);
+    Particle.variable("flow", (double) flow_rate);
     iter = 0;
 }
 

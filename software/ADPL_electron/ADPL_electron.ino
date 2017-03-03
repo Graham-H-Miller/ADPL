@@ -81,7 +81,14 @@ void loop() {
 
     if ((currentTime - bucket.time_last_measured) > FLOW_DELAY) {
         bucket.update();
+        if (bucket.flow_rate < 6 && pinchvalve.quarter_turns < 10){
+          pinchvalve.shiftUp();
+        }
+        else if (bucket.flow_rate > 12 && pinchvalve.quarter_turns > -10){
+          pinchvalve.shiftDown();
+        }
     }
+
     // measure temp, determine if light gas
     if (tempHTR.temp <= INCINERATE_LOW_TEMP && !valve.gasOn) {
         valve.open();

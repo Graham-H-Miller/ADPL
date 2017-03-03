@@ -7,7 +7,7 @@ class PinchValve{
         PinchValve(int dir_pin, int step_pin, int sleep_pin);
         void shiftUp();
         void shiftDown();
-        int position
+        int quarter_turns;
         bool up;
         bool down;
 
