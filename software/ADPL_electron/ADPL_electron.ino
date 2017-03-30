@@ -45,6 +45,8 @@ Bucket bucket(BUCKET);
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
+#define POSITION_MAX 6
+#define POSITION_MIN -6
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -170,10 +172,10 @@ int publish_data(int last_publish_time) {
     }
 
     // caps maximum/minimum position
-    if (bucket.flow_rate > 10.0 && pinchValve.position > -6) {
+    if (bucket.flow_rate > BUCKET_MAX_FLOW && pinchValve.position > POSITION_MIN) {
       pinchValve.down = true;
     }
-    else if (bucket.flow_rate < 2.0 && pinchValve.position < 6){
+    else if (bucket.flow_rate < BUCKET_MIN_FLOW && pinchValve.position < POSITION_MAX){
       pinchValve.up = true;
     }
 

@@ -12,7 +12,7 @@
 #define BUCKET C4 // Kenya
 #define STEP D3
 #define DIR D5
-#define SLEEP D6
+#define SLEEP D1
 #define UP B5
 #define DOWN B4
 #define RES B3
