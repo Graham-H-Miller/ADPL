@@ -42,9 +42,13 @@ Pump pump(PUMP);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
+#define BUCKET_MAX_FLOW 10.0
+#define BUCKET_MIN_FLOW 2.0
 
 #include "PinchValve.h"
-PinchValve pinchvalve(DIR, STEP, SLEEP);
+PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
+#define POSITION_MAX 6
+#define POSITION_MIN -6
 
 // initialize some time counters
 unsigned long currentTime = 0;
@@ -59,13 +63,12 @@ void setup() {
     // collect the system firmware version to fetch OTA
     SYS_VERSION = System.versionNumber();
     Particle.variable("SYS_VERSION", SYS_VERSION);
-
     // count bucket tips on one-shot rise
     attachInterrupt(BUCKET, bucket_tipped, RISING);
-
     // respond to push button interface
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
+    //attachInterrupt(RES, res_pushed, FALLING);
 }
 
 void loop() {
@@ -73,20 +76,8 @@ void loop() {
 
     // rotate through temp probes, only reading 1 / loop since it takes 1 s / read
     temp_count = read_temp(temp_count);
-
-    // publish last publish data if greater than last publish time
     if ((currentTime - last_publish_time) > PUBLISH_DELAY) {
         last_publish_time = publish_data(last_publish_time);
-    }
-
-    if ((currentTime - bucket.time_last_measured) > FLOW_DELAY) {
-        bucket.update();
-        if (bucket.flow_rate < 6 && pinchvalve.quarter_turns < 10){
-          pinchvalve.shiftUp();
-        }
-        else if (bucket.flow_rate > 12 && pinchvalve.quarter_turns > -10){
-          pinchvalve.shiftDown();
-        }
     }
 
     // measure temp, determine if light gas
@@ -119,12 +110,12 @@ void loop() {
             pump.turnOff();
         }
     }
-
-    if(pinchvalve.down) {
-        pinchvalve.shiftDown();
+    // flag variables changed in attachInterrupt function
+    if(pinchValve.down) {
+        pinchValve.shiftDown();
     }
-    if(pinchvalve.up) {
-        pinchvalve.shiftUp();
+    if(pinchValve.up) {
+        pinchValve.shiftUp();
     }
 }
 
@@ -172,7 +163,10 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
+    // update the flow based on the past tip
+    bucket.updateFlow(bucket.was_successful, PUBLISH_DELAY);
     publish_success = Particle.publish("DATA",data_str);
+    bucket.was_successful = publish_success;
 
     if (publish_success) {
         last_publish_time = currentTime;
@@ -181,14 +175,25 @@ int publish_data(int last_publish_time) {
         bucket.tip_count = 0;
     }
 
+    // caps maximum/minimum position
+    if (bucket.flow_rate > BUCKET_MAX_FLOW && pinchValve.position > POSITION_MIN) {
+      pinchValve.down = true;
+    }
+    else if (bucket.flow_rate < BUCKET_MIN_FLOW && pinchValve.position < POSITION_MAX){
+      pinchValve.up = true;
+    }
+
     return last_publish_time;
 }
 
+void res_pushed(){
+  pinchValve.position = 0;
+}
 
 void up_pushed() {
-    pinchvalve.up = true;
+  pinchValve.up = true;
 }
 
 void down_pushed(){
-    pinchvalve.down = true;
+  pinchValve.down = true;
 }
