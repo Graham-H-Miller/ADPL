@@ -40,6 +40,8 @@ Pump pump(PUMP);
 
 #include "Bucket.h"
 Bucket bucket(BUCKET);
+#define BUCKET_MAX_FLOW 10.0
+#define BUCKET_MIN_FLOW 2.0
 
 #include "PinchValve.h"
 PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RES);
@@ -155,6 +157,7 @@ int publish_data(int last_publish_time) {
             tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
             int(valve.gasOn), int(bucket.tip_count));
 
+    // update the flow based on the past tip
     bucket.updateFlow(bucket.was_successful, PUBLISH_DELAY);
     publish_success = Particle.publish("DATA",data_str);
     bucket.was_successful = publish_success;
@@ -166,6 +169,7 @@ int publish_data(int last_publish_time) {
         bucket.tip_count = 0;
     }
 
+    // caps maximum/minimum position
     if (bucket.flow_rate > 10.0 && pinchValve.position > -6) {
       pinchValve.down = true;
     }
