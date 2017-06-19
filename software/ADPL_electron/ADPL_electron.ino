@@ -88,8 +88,6 @@ void setup() {
 
     if (SDCARD) {
         pinMode(SD_CS_PIN, OUTPUT);
-        SD.begin(SD_CS_PIN);
-        sdFile = SD.open("adpl_data.txt", FILE_WRITE);  // FILE_WRITE should append existing file
     }
 }
 
@@ -106,8 +104,13 @@ void loop() {
                                               tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
         }
         if(SDCARD){
-            publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp,
-                                            tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count), sdFile);
+            SD.begin(SD_CS_PIN, SD_DI_PIN, SD_DO_PIN, SD_CLK_PIN);
+            sdFile = SD.open("adpl_data.txt", FILE_WRITE);  // FILE_WRITE should append existing file
+            publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
+                                              int(valve.gasOn), int(bucket.tip_count), sdFile);
+            sdFile.write("test");
+            sdFile.close();
+            Particle.publish("DATA", sdFile.available());
         }
         if(publishedCell || publishedSD){
             // reset the bucket tip count after every successful publish

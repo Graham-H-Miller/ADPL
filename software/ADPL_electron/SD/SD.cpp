@@ -520,25 +520,25 @@ File SDClass::open(char *filepath, uint8_t mode) {
 //}
 
 
-boolean SDClass::exists(char *filepath) {
-  /*
-
-     Returns true if the supplied file path exists.
-
-   */
-  return walkPath(filepath, root, callback_pathExists);
-}
-
-
-//boolean SDClass::exists(char *filepath, SdFile& parentDir) {
+//boolean SDClass::exists(char *filepath) {
 //  /*
 //
-//     Returns true if the supplied file path rooted at `parentDir`
-//     exists.
+//     Returns true if the supplied file path exists.
 //
 //   */
-//  return walkPath(filepath, parentDir, callback_pathExists);
+//  return walkPath(filepath, root, callback_pathExists);
 //}
+
+
+boolean SDClass::exists(char *filepath, SdFile& parentDir) {
+  /*
+
+     Returns true if the supplied file path rooted at `parentDir`
+     exists.
+
+   */
+  return walkPath(filepath, parentDir, callback_pathExists);
+}
 
 
 boolean SDClass::mkdir(char *filepath) {

@@ -87,7 +87,7 @@ public:
   File open(const char *filename, uint8_t mode = FILE_READ);
 
   // Methods to determine if the requested file path exists.
-  boolean exists(char *filepath);
+  boolean exists(char *filepath, SdFile& parentDir);
 
   // Create the requested directory heirarchy--if intermediate directories
   // do not exist they will be created.
