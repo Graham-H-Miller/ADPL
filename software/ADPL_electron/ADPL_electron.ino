@@ -23,6 +23,7 @@ unsigned long SYS_VERSION;
 #include "PublishDataSD.h"
 PublishDataSD sDPublisher;
 File sdFile;
+char fileName[] = "adpl_data.txt";
 #endif
 
 #include "PublishDataCell.h"
@@ -88,6 +89,15 @@ void setup() {
 
     if (SDCARD) {
         pinMode(SD_CS_PIN, OUTPUT);
+        SPI.begin(SPI_MODE_MASTER); //makes A2 the default SS pin
+        if(!SD.begin(SD_CS_PIN, SD_DI_PIN, SD_DO_PIN, SD_CLK_PIN)){
+            Particle.publish("SD ERROR", "Card failed to initialize");
+        }
+        sdFile = SD.open(fileName, FILE_WRITE);  // FILE_WRITE should append existing file
+        if(!sdFile){
+            Particle.publish("SD ERROR", "File failed to open");
+        }
+
     }
 }
 
@@ -104,12 +114,9 @@ void loop() {
                                               tempHXHO.temp, int(valve.gasOn), int(bucket.tip_count));
         }
         if(SDCARD){
-            SD.begin(SD_CS_PIN, SD_DI_PIN, SD_DO_PIN, SD_CLK_PIN);
-            sdFile = SD.open("adpl_data.txt", FILE_WRITE);  // FILE_WRITE should append existing file
             publishedSD = sDPublisher.publish(tempHXCI.temp, tempHXCO.temp, tempHTR.temp, tempHXHI.temp, tempHXHO.temp,
                                               int(valve.gasOn), int(bucket.tip_count), sdFile);
-            sdFile.write("test");
-            sdFile.close();
+            sdFile.flush();
             Particle.publish("DATA", sdFile.available());
         }
         if(publishedCell || publishedSD){

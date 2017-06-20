@@ -14,7 +14,7 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
     sprintf(data_str, (bucket_tip_count > 0) ? fmt_string_SD : fmt_string_no_bucket_SD,
             millis(), HXCI, HXCO, HTR, HXHI, HXHO, gasOn, bucket_tip_count);
 
-    sdFile.write(data_str);
+    sdFile.println(data_str);
     //Indicates publishing success
     return true;
 }
