@@ -74,6 +74,7 @@ int temp_count = 1;
 int write_address = 0;
 
 void setup() {
+    Log.info("Starting setup...");
     Serial.begin(9600);
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
@@ -99,6 +100,7 @@ void setup() {
         }
 
     }
+    Log.info("Setup complete! System is running version %s", (const char*)SYS_VERSION);
 }
 
 void loop() {
