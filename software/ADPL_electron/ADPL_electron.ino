@@ -199,29 +199,40 @@ void loop() {
 }
 
 int read_temp(int temp_count) {
+    Log.info("Reading temperatures...");
     switch (temp_count) {
         case 1:
+            Log.trace("Reading temp: heat exchanger cold inlet...");
             tempHXCI.read();
             temp_count++;
+            Log.trace("Reading complete.");
             break;
         case 2:
+            Log.trace("Reading temp: heat exchanger cold outlet...");
             tempHXCO.read();
             temp_count++;
+            Log.trace("Reading complete");
             break;
         case 3:
+            Log.trace("Reading temp: heater...");
             tempHTR.read();
             temp_count++;
+            Log.trace("Reading complete.");
             break;
         case 4:
+            Log.trace("Reading temp: heat exchanger hot inlet...");
             tempHXHI.read();
             temp_count++;
+            Log.trace("Reading complete.");
             break;
         case 5:
+            Log.trace("Reading temp: heat exchanger hot outlet...");
             tempHXHO.read();
             temp_count = 1;
+            Log.trace("Reading complete.");
             break;
     }
-
+    Log.info("Reading complete.");
     return temp_count;
 }
 
