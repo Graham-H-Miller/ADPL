@@ -4,6 +4,7 @@
 #define HTR A2  // Heater
 #define HXHI A3 // Heat Exchanger Hot Inlet
 #define HXHO A4 // Heat Exchanger Hot Outlet
+#define EXHAUST A5 //Exhaust thermistor
 #define VALVE D4
 #define IGNITOR D2
 #define PUMP D0
