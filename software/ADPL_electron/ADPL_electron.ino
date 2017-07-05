@@ -57,6 +57,7 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 // initialize some time counters
 unsigned long currentTime = 0;
 unsigned long last_publish_time = 0;
+unsigned long prev_exhaust_temp = 0;
 int temp_count = 1;
 int write_address = 0;
 
@@ -97,10 +98,14 @@ void loop() {
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
-        else if(tempExhaust.temp < EXHAUST_TEMP_THRESHOLD && (currentTime - ignitor.timeLastFired) > 60000) {
-            // if exhaust temperature is below threshold AND it has been a minute since the ignitor was last fired,
+        else if((currentTime - ignitor.timeLastFired) > 60000 &&
+                tempExhaust.temp < EXHAUST_TEMP_THRESHOLD && (tempExhaust.temp - prev_exhaust_temp) < 10) {
+            // if it has been a minute since the ignitor was last fired AND
+            // exhaust temperature is below threshold AND temp hasn't risen at least 10 degrees since the last firing,
             // assume the fire has gone out and fire again
             ignitor.fire();
+            tempExhaust.read();
+            prev_exhaust_temp = tempExhaust.temp;
         }
     }
 
