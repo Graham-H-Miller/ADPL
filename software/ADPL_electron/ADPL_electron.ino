@@ -32,7 +32,7 @@ Valve valve(VALVE);
 Ignitor ignitor(IGNITOR);
 #define INCINERATE_LOW_TEMP 68  // will be 68 in field
 #define INCINERATE_HIGH_TEMP 72 // will be 72 in field
-#define EXHAUST_TEMP_THRESHOLD 85     // the exhaust temp dropping below this indicates that the ignitor has gone out
+#define EXHAUST_TEMP_THRESHOLD 68     // the exhaust temp dropping below this indicates that the ignitor has gone out
 
 #include "Pump.h"
 Pump pump(PUMP);
@@ -97,8 +97,9 @@ void loop() {
         if (tempHTR.temp >= INCINERATE_HIGH_TEMP) {
             valve.close();
         }
-        // if the exhaust temperature is below the threshold (85 degrees), assume the fire has gone out and fire again
-        else if(tempExhaust.temp < EXHAUST_TEMP_THRESHOLD) {
+        else if(tempExhaust.temp < EXHAUST_TEMP_THRESHOLD && (currentTime - ignitor.timeLastFired) > 60000) {
+            // if exhaust temperature is below threshold AND it has been a minute since the ignitor was last fired,
+            // assume the fire has gone out and fire again
             ignitor.fire();
         }
     }
