@@ -31,7 +31,6 @@ class Dashboard extends Component {
 					fetchTemps={this.props.fetchTemps}
 					meta={this.props.meta}/>
 				{
-					this.props.currentValue = this.props.locations[0] &&
 					this.props.currentLocation &&
 					<Tabs index={this.state.tabIndex} onChange={this.handleTabChange}>
 						<Tab label="Temps">
