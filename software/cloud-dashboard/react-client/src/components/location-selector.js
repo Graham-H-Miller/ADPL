@@ -33,7 +33,7 @@ class LocationSelector extends Component {
 				allowBlank={false}
 				onChange={this.handleChange}
 				source={this.locationData}
-				value={this.setState({currentValue: this.locationData[0]})}/>
+				value={this.state.currentValue}/>
 			</div>
 		)
 	} 
