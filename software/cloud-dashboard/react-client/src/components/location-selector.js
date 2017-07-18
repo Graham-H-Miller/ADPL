@@ -26,9 +26,9 @@ class LocationSelector extends Component {
 
 	render() {
 		// set all necessary info to the first location
-		this.setState({currentValue: this.locationData[0]})
+		//this.setState({currentValue: this.locationData[0]})
         //this.props.fetchTemps(this.locationData[0], this.props.meta.daysToFetch || constants.daysToFetch);
-        //this.props.selectLocation(this.locationData[0]);
+        this.props.selectLocation(this.locationData[0]);
 
 		return (
 			<div style={{maxWidth: '300px', margin:'auto'}}>
