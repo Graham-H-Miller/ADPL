@@ -5,8 +5,8 @@ import constants from '../constants';
 class LocationSelector extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			currentValue: null	
+        this.state = {
+			currentValue: null
 		} 
 
 		this.locationData = []; 
@@ -24,7 +24,12 @@ class LocationSelector extends Component {
 		this.props.selectLocation(value);
 	}
 
-	render() { 
+	render() {
+		// set all necessary info to the first location
+		this.setState({currentValue: this.locationData[0]})
+        this.props.fetchTemps(this.locationData[0], this.props.meta.daysToFetch || constants.daysToFetch);
+        this.props.selectLocation(this.locationData[0]);
+
 		return (
 			<div style={{maxWidth: '300px', margin:'auto'}}>
 			<Dropdown
@@ -33,7 +38,7 @@ class LocationSelector extends Component {
 				allowBlank={false}
 				onChange={this.handleChange}
 				source={this.locationData}
-				value={this.state.currentValue}/>
+				value={(this.state.currentValue)}/>
 			</div>
 		)
 	} 
