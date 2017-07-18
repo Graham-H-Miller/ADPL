@@ -16,7 +16,7 @@ class LocationSelector extends Component {
 		this.locationData = nextProps.locations.map( (loc, index) => {
 			return {value: loc, label: loc}
 		});
-		this.state = this.locationData[0];
+		this.setState({currentValue: this.locationData[0]});
 	}
 
 	handleChange = value => {
