@@ -16,7 +16,6 @@ class LocationSelector extends Component {
 		this.locationData = nextProps.locations.map( (loc, index) => {
 			return {value: loc, label: loc}
 		});
-		this.setState({currentValue: this.locationData[0]});
 	}
 
 	handleChange = value => {
@@ -34,7 +33,7 @@ class LocationSelector extends Component {
 				allowBlank={false}
 				onChange={this.handleChange}
 				source={this.locationData}
-				value={this.state.currentValue}/>
+				value={this.setState({currentValue: this.locationData[0]})}/>
 			</div>
 		)
 	} 
