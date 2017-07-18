@@ -30,7 +30,7 @@ class LocationSelector extends Component {
 			<Dropdown
 				auto
 				label='Select ADPL Location'
-				allowBlank={true}
+				allowBlank={false}
 				onChange={this.handleChange}
 				source={this.locationData}
 				value={this.state.currentValue}/>
