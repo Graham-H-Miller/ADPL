@@ -24,7 +24,7 @@ class Dashboard extends Component {
 	// TODO: Refactor LocationSelector and TempView into containers 
 	render() {
 		return (
-			<div className="dashboard"> 
+			<div className="dashboard">
 				<LocationSelector 
 					locations={this.props.locations} 
 					selectLocation={this.props.selectLocation}

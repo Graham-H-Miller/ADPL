@@ -26,8 +26,8 @@ class LocationSelector extends Component {
 
 	render() {
 		// set all necessary info to the first location
-		this.state.componentWillReceiveProps(this.props.locations);
-        this.state.handleChange(this.locationData[0]);
+		//this.state.componentWillReceiveProps(this.props.locations);
+        this.state.handleChange();
 
 		return (
 			<div style={{maxWidth: '300px', margin:'auto'}}>
