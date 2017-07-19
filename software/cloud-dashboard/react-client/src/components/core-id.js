@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+/*import React, { Component, PropTypes } from 'react';
 import { locMap } from "node-server/config/device-map"
 import { Card, CardMedia, CardTitle, CardText, CardActions } from 'react-toolbox/lib/card';
 import {handlePromiseWithData as props} from "../reducers/util";
@@ -38,3 +38,4 @@ class CoreID extends Component {
 }
 
 export default CoreID;
+*/

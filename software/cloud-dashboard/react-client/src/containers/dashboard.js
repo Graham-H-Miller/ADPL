@@ -30,8 +30,7 @@ class Dashboard extends Component {
 					locations={this.props.locations} 
 					selectLocation={this.props.selectLocation}
 					fetchTemps={this.props.fetchTemps}
-					meta={this.props.meta}/>
-				<CoreID/>
+					meta={this.props.meta}/>[
 				{
 					this.props.currentLocation &&
 					<Tabs index={this.state.tabIndex} onChange={this.handleTabChange}>
