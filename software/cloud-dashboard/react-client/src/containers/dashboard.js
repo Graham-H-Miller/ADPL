@@ -33,19 +33,12 @@ class Dashboard extends Component {
 					meta={this.props.meta}/>[
 				{
 					this.props.currentLocation &&
-					<Tabs index={this.state.tabIndex} onChange={this.handleTabChange}>
-						<Tab label="Temps">
 							<TempView
 								temps={this.props.temps} 
 								fetchTemps={this.props.fetchTemps}
 								setDaysToFetch={this.props.setDaysToFetch}
-								currentLocation={this.props.currentLocation}/>
-						</Tab>
-						<Tab label="Bucket Tips">
+								currentLocation={this.props.currentLocation}/> &&
 							<BucketView />
-								
-						</Tab>
-					</Tabs>
 				}
 
 				<div className="links"> 
