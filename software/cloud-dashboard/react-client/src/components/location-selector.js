@@ -26,8 +26,8 @@ class LocationSelector extends Component {
 
 	render() {
 		// set all necessary info to the first location
-		//this.state.componentWillReceiveProps(this.props.locations);
-        this.state.handleChange();
+		//this.locationData = this.state.componentWillReceiveProps(this.props.locations);
+        //this.state.handleChange()
 
 		return (
 			<div style={{maxWidth: '300px', margin:'auto'}}>
@@ -45,7 +45,7 @@ class LocationSelector extends Component {
 
 LocationSelector.propTypes = {
 	locations: PropTypes.array.isRequired,
-	fetchTemps: PropTypes.func.isRequired, 
+	fetchTemps: PropTypes.func.isRequired,
 }
 
 export default LocationSelector;

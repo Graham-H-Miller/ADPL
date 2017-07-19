@@ -8,6 +8,7 @@ import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';
 import TempView from '../components/temp-view';
 import './dashboard.css';
+import CoreID from "../components/core-id";
 
 class Dashboard extends Component {
 	constructor(props) {
@@ -30,6 +31,7 @@ class Dashboard extends Component {
 					selectLocation={this.props.selectLocation}
 					fetchTemps={this.props.fetchTemps}
 					meta={this.props.meta}/>
+				<CoreID />
 				{
 					this.props.currentLocation &&
 					<Tabs index={this.state.tabIndex} onChange={this.handleTabChange}>
