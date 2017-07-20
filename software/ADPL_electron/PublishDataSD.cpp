@@ -39,7 +39,7 @@ bool PublishDataSD::publish(double HXCI, double HXCO, double HTR, double HXHI, d
 
 }
 
-bool PublishDataSD::pushToCell(File sdFile) {
+bool PublishDataSD::pushToCell(SdFat SD, File sdFile) {
     // open the file for write at end like the "Native SD library"
     if (!sdFile.open("adpl_data.txt", O_RDWR)) {
         Log.error("opening file for write failed.");
@@ -48,17 +48,23 @@ bool PublishDataSD::pushToCell(File sdFile) {
     // initialize a bool to determine success
     bool success = true;
     // read each line in the file and subsequently publish it
-    char data_str[69];
-    size_t n;
-    while ((n = sdFile.fgets(data_str, sizeof(data_str))) > 0) {
-        //determine if reading the end of a line
-        if (data_str[n - 1] != '\n') {
-            Log.error("Line in data file did not end with newline character.");
-            return false;
-        }
-        if(!Particle.publish("SD DATA", data_str)){
-            // if publish failed
-            success = false;
+    while (Particle.connected() && sdFile.peek() != -1) {
+        char data_str[69];
+        size_t n;
+        while ((n = sdFile.fgets(data_str, sizeof(data_str))) > 0) {
+            //determine if reading the end of a line
+            if (data_str[n - 1] != '\n') {
+                Log.error("Line in data file did not end with newline character.");
+                return false;
+            }
+            if (!Particle.publish("SD DATA", data_str)) {
+                // if publish failed
+                success = false;
+            } else {
+                // if publish succeeded
+                //TODO: refactor as variable and/or pass as param
+                removeLinesFromFile(SD, "adpl_data.txt", 1, 1); //start and end lines are the same since only 1 line is being removed
+            }
         }
     }
     // close the file:

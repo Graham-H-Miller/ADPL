@@ -7,7 +7,7 @@ class PublishDataSD {
 public:
     bool publish(double HXCI, double HXCO, double HTR, double HXHI, double HXHO,
                  int gasOn, int bucket_tip_count, File sdFile);
-    bool pushToCell(File sdFile);
+    bool pushToCell(SdFat SD, File sdFile);
     void removeLinesFromFile(SdFat SD, char* fileName, int sLine, int eLine);
 private:
     void CopyFiles(SdFat SD, char* ToFile, char* FromFile);

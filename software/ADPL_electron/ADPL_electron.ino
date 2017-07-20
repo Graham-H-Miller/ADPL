@@ -134,7 +134,7 @@ void loop() {
                 Log.info("SD card with cached data is present. Pushing cached data to server...");
                 // close the file so as not to interfere with the pushToCell function
                 sdFile.close();
-                if (sdPublisher.pushToCell(sdFile)) {
+                if (sdPublisher.pushToCell(sd, sdFile)) {
                     // if the data push was successful
                     Log.info("SD data push successful. Deleting data file...");
                     if (sd.remove("adpl_data.txt")) {
