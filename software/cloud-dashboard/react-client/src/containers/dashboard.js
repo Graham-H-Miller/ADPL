@@ -8,7 +8,7 @@ import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';
 import TempView from '../components/temp-view';
 import './dashboard.css';
-import { getCoreID } from "node-server/config/device-map"
+//import { getCoreID } from "node-server/config/device-map"
 
 class Dashboard extends Component {
 	constructor(props) {
@@ -33,7 +33,7 @@ class Dashboard extends Component {
 					meta={this.props.meta}/>
 				{
 					this.props.currentLocation &&
-					<h1>Current Loc: {this.props.currentLocation}</h1> &&
+					//<h1>Current Loc: {this.props.currentLocation}</h1> &&
 					<TempView
 						temps={this.props.temps}
 						fetchTemps={this.props.fetchTemps}
