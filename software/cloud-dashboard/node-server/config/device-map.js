@@ -23,5 +23,8 @@ module.exports={
 			}
 		}
 		return revMap
-	} // returns the reverse of locMap
+	}, // returns the reverse of locMap
+	getCoreID : function (index) {
+		return this.locMap[index];
+    }
 }

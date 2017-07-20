@@ -8,7 +8,7 @@ import {Tab, Tabs} from 'react-toolbox';
 import LocationSelector from '../components/location-selector';
 import TempView from '../components/temp-view';
 import './dashboard.css';
-import CoreID from "../components/core-id";
+import { getCoreID } from "node-server/config/device-map"
 
 class Dashboard extends Component {
 	constructor(props) {
@@ -30,15 +30,16 @@ class Dashboard extends Component {
 					locations={this.props.locations} 
 					selectLocation={this.props.selectLocation}
 					fetchTemps={this.props.fetchTemps}
-					meta={this.props.meta}/>[
+					meta={this.props.meta}/>
 				{
 					this.props.currentLocation &&
-							<TempView
-								temps={this.props.temps} 
-								fetchTemps={this.props.fetchTemps}
-								setDaysToFetch={this.props.setDaysToFetch}
-								currentLocation={this.props.currentLocation}/> &&
-							<BucketView />
+					<h1>Current Loc: {this.props.currentLocation}</h1> &&
+					<TempView
+						temps={this.props.temps}
+						fetchTemps={this.props.fetchTemps}
+						setDaysToFetch={this.props.setDaysToFetch}
+						currentLocation={this.props.currentLocation}/> &&
+					<BucketView />
 				}
 
 				<div className="links"> 
