@@ -62,7 +62,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 unsigned long currentTime = 0;
 unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
-unsigned long ISITUP = 0;
 int temp_count = 1;
 int write_address = 0;
 
@@ -79,6 +78,9 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
+
+    // initialize the pinch valve variable for raise tracking
+    pinchValve.isRaised = false;
 }
 
 void loop() {
@@ -168,23 +170,23 @@ void loop() {
     ////THIS IS THE NEW STUFF////////
 
     currentTime = millis();
-    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (ISITUP == 0)) {  // Gives all times in ms
+    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
         WAIT_TIME = millis();
-        ISITUP = 1;
+        pinchValve.isRaised = true;
     }
-    if((bucket.tip) && (ISITUP == 1)){
+    if((bucket.tip) && (pinchValve.isRaised)){
         pinchValve.down = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         bucket.tip = false;
-        ISITUP = 0;
+        pinchValve.isRaised = false;
         WAIT_TIME = millis();
     }
-    if((bucket.tip) && (ISITUP == 0)){
+    if((bucket.tip) && (pinchValve.isRaised = false)){
         bucket.tip = false;
-        ISITUP = 0;
+        pinchValve.isRaised = false;
         WAIT_TIME = millis();
     }
 }
@@ -255,7 +257,7 @@ void res_pushed(){
 //  pinchValve.resolution = RESET_RISE; // Commented out for Batch Tests
 //  bucket.lastTime = millis();
     WAIT_TIME = millis();
-    ISITUP = 0;
+    pinchValve.isRaised = false;
 }
 
 void up_pushed() {
