@@ -10,6 +10,7 @@ class PinchValve{
         volatile bool up;
         volatile bool down;
         volatile bool isRaised;
+        unsigned long lastTime;
         double position;
         double resolution;
         int clogCounting; // counts length of attempts to unclog

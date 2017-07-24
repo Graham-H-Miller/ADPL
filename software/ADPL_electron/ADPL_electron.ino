@@ -60,7 +60,6 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 
 // initialize some time counters
 unsigned long currentTime = 0;
-unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
 int temp_count = 1;
 int write_address = 0;
@@ -79,8 +78,9 @@ void setup() {
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
 
-    // initialize the pinch valve variable for raise tracking
+    // initialize the pinch valve variables for raise and time tracking
     pinchValve.isRaised = false;
+    pinchValve.lastTime = millis();
 }
 
 void loop() {
@@ -170,11 +170,11 @@ void loop() {
     ////THIS IS THE NEW STUFF////////
 
     currentTime = millis();
-    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
+    if(((currentTime - pinchValve.lastTime) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-        WAIT_TIME = millis();
+        pinchValve.lastTime = millis();
         pinchValve.isRaised = true;
     }
     if((bucket.tip) && (pinchValve.isRaised)){
@@ -182,12 +182,12 @@ void loop() {
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         bucket.tip = false;
         pinchValve.isRaised = false;
-        WAIT_TIME = millis();
+        pinchValve.lastTime = millis();
     }
     if((bucket.tip) && (pinchValve.isRaised = false)){
         bucket.tip = false;
         pinchValve.isRaised = false;
-        WAIT_TIME = millis();
+        pinchValve.lastTime = millis();
     }
 }
 
@@ -256,7 +256,7 @@ void res_pushed(){
 //  pinchValve.up = true; // Commented out for Batch Tests
 //  pinchValve.resolution = RESET_RISE; // Commented out for Batch Tests
 //  bucket.lastTime = millis();
-    WAIT_TIME = millis();
+    pinchValve.lastTime = millis();
     pinchValve.isRaised = false;
 }
 
