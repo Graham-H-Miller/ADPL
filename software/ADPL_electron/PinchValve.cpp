@@ -61,8 +61,9 @@ void PinchValve::shiftUp(double res) {
 
 void PinchValve::unclog(float unclog_resolution) {
     shiftUp(unclog_resolution);
+    delay(1500);
     shiftDown(unclog_resolution);
-    shiftUp(unclog_resolution);
-    shiftDown(unclog_resolution);
+    //  shiftUp(unclog_resolution);
+    //  shiftDown(unclog_resolution);
     clogCounting++;
 }
