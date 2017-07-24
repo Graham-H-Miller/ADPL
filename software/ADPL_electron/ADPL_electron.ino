@@ -177,17 +177,18 @@ void loop() {
         pinchValve.lastTime = millis();
         pinchValve.isRaised = true;
     }
-    if((bucket.tip) && (pinchValve.isRaised)){
-        pinchValve.down = true;
-        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
-        bucket.tip = false;
-        pinchValve.isRaised = false;
-        pinchValve.lastTime = millis();
-    }
-    if((bucket.tip) && (pinchValve.isRaised = false)){
-        bucket.tip = false;
-        pinchValve.isRaised = false;
-        pinchValve.lastTime = millis();
+    if(bucket.tip) {
+        if (pinchValve.isRaised) {
+            pinchValve.down = true;
+            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
+            bucket.tip = false;
+            pinchValve.isRaised = false;
+            pinchValve.lastTime = millis();
+        } else {
+            bucket.tip = false;
+            pinchValve.isRaised = false;
+            pinchValve.lastTime = millis();
+        }
     }
 }
 
