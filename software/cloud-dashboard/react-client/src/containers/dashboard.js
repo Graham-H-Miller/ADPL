@@ -44,9 +44,6 @@ class Dashboard extends Component {
 							<BucketView />
 
 						</Tab>
-                        <Tab label="Core ID">
-                            
-                        </Tab>
 					</Tabs>
                 }
 
