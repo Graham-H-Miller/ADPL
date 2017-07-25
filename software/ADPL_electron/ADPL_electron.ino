@@ -181,14 +181,11 @@ void loop() {
         if (pinchValve.isRaised) {
             pinchValve.down = true;
             pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
-            bucket.tip = false;
-            pinchValve.isRaised = false;
-            pinchValve.lastTime = millis();
-        } else {
-            bucket.tip = false;
-            pinchValve.isRaised = false;
-            pinchValve.lastTime = millis();
         }
+        bucket.tip = false;
+        pinchValve.isRaised = false;
+        pinchValve.lastTime = millis();
+
     }
 }
 
