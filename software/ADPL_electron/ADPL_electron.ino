@@ -66,6 +66,7 @@ int write_address = 0;
 
 void setup() {
     Serial.begin(9600);
+    SerialLogHandler logHandler;
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
@@ -134,19 +135,26 @@ void loop() {
     currentTime = millis();
     if(((currentTime - pinchValve.lastTime) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
-        pinchValve.up = true;
+        Log.info("Designated amount of time has passed since last tip. Raising pinch valve...");
+        Particle.publish("LOGIC", "batch flow tripped"); //TESTING, DELETE
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
+        pinchValve.shiftUp(pinchValve.resolution);
         pinchValve.lastTime = millis();
         pinchValve.isRaised = true;
+        if(pinchValve.isRaised) Particle.publish("LOGIC", "valve is raised");//testing, delete
     }
     if(bucket.tip) {
+        Log.info("Bucket tip detected.");
+        Particle.publish("LOGIC", "Bucket tipped"); //testing, delete
         if (pinchValve.isRaised) {
+            Log.info("Pinch valve is raised. Lowering...");
             pinchValve.down = true;
             pinchValve.resolution = BATCH_MOVEMENT;
         }
         bucket.tip = false;
         pinchValve.isRaised = false;
         pinchValve.lastTime = millis();
+        Log.info("Bucket tip handled.");
     }
 }
 
@@ -207,20 +215,23 @@ int publish_data(int last_publish_time) {
 }
 
 void res_pushed(){
+    Log.warn("Reset button pushed. Resetting pinch valve...");
     pinchValve.position = 0.0;
-//  pinchValve.up = true; // Commented out for Batch Tests
-//  pinchValve.resolution = RESET_RISE; // Commented out for Batch Tests
-//  bucket.lastTime = millis();
     pinchValve.lastTime = millis();
     pinchValve.isRaised = false;
+    Log.info("Pinch valve reset.");
 }
 
 void up_pushed() {
+    Log.warn("Up button pushed. Raising pinch valve..");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Valve raised.");
 }
 
 void down_pushed(){
+    Log.warn("Down button pushed. Lowering pinch valve...");
     pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
+    Log.info("Valve lowered.");
 }
