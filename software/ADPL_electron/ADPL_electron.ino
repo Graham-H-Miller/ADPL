@@ -130,45 +130,7 @@ void loop() {
         pinchValve.shiftUp(pinchValve.resolution);
         EEPROM.put(write_address, pinchValve.position);
     }
-
-    // unclog if no tip in a long while
-    // open all the way up and come back to optimum
-
-    /////// COMMENTED OUT FOR BATCH TESTS ////////
-    //  currentTime = millis();
-    //  if ((currentTime - bucket.lastTime) > (2 * bucket.lowFlow)) {
-    //      pinchValve.unclog(UNCLOG_RESOLUTION);
-    //      bucket.lastTime = currentTime; // commented out for tests
-
-    //      if(pinchValve.clogCounting >= 2 && pinchValve.position < MAX_POSITION){
-    //          pinchValve.up = true;
-    //          pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    //      }
-
-    //  }
-    /////// COMMENTED OUT FOR BATCH TESTS ////////
-
-    //  if(bucket.tip) {
-    //      pinchValve.clogCounting = 0;
-    //      bucket.updateFlow();
-    //      if (bucket.tipTime < bucket.highFlow && bucket.tipTime > bucket.highestFlow && pinchValve.position > MIN_POSITION) {
-    //        pinchValve.down = true;
-    //        pinchValve.resolution = FEEDBACK_RESOLUTION;
-    //      }
-    //      else if (bucket.tipTime > bucket.lowFlow && pinchValve.position < MAX_POSITION){
-    //        pinchValve.up = true;
-    //        pinchValve.resolution = FEEDBACK_RESOLUTION;
-    //      }
-    //      else if (bucket.tipTime < bucket.highestFlow){
-    //        pinchValve.down = true; // handles sudden large flow
-    //        pinchValve.resolution = HALF_RESOLUTION;
-    //      }
-    //  }
-
-    /////// COMMENTED OUT FOR BATCH TESTS ////////
-
-    ////THIS IS THE NEW STUFF////////
-
+    
     currentTime = millis();
     if(((currentTime - pinchValve.lastTime) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
