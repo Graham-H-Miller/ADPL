@@ -180,18 +180,13 @@ void loop() {
     if(bucket.tip) {
         if (pinchValve.isRaised) {
             pinchValve.down = true;
-            pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
+            pinchValve.resolution = BATCH_MOVEMENT;
         }
         bucket.tip = false;
         pinchValve.isRaised = false;
         pinchValve.lastTime = millis();
-
     }
 }
-
-////THIS IS THE NEW STUFF////////
-
-
 
 int read_temp(int temp_count) {
     switch (temp_count) {
