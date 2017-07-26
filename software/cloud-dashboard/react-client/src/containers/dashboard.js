@@ -42,8 +42,10 @@ class Dashboard extends Component {
 						</Tab>
 						<Tab label="Bucket Tips">
 							<BucketView />
-
 						</Tab>
+                        <Tab label="Core ID">
+                            <h1>This is the coreID</h1>
+                        </Tab>
 					</Tabs>
                 }
 
