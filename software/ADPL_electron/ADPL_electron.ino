@@ -136,25 +136,22 @@ void loop() {
     if(((currentTime - pinchValve.lastTime) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
         Log.info("Designated amount of time has passed since last tip. Raising pinch valve...");
-        Particle.publish("LOGIC", "batch flow tripped"); //TESTING, DELETE
+        pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-        pinchValve.shiftUp(pinchValve.resolution);
         pinchValve.lastTime = millis();
         pinchValve.isRaised = true;
-        if(pinchValve.isRaised) Particle.publish("LOGIC", "valve is raised");//testing, delete
     }
-    if(bucket.tip) {
-        Log.info("Bucket tip detected.");
-        Particle.publish("LOGIC", "Bucket tipped"); //testing, delete
-        if (pinchValve.isRaised) {
-            Log.info("Pinch valve is raised. Lowering...");
-            pinchValve.down = true;
-            pinchValve.resolution = BATCH_MOVEMENT;
-        }
+    if((bucket.tip) && (pinchValve.isRaised)){
+        pinchValve.down = true;
+        pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         bucket.tip = false;
         pinchValve.isRaised = false;
         pinchValve.lastTime = millis();
-        Log.info("Bucket tip handled.");
+    }
+    if((bucket.tip) && (!pinchValve.isRaised)){
+        bucket.tip = false;
+        pinchValve.isRaised = false;
+        pinchValve.lastTime = millis();
     }
 }
 
