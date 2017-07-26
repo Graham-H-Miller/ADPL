@@ -44,7 +44,7 @@ class Dashboard extends Component {
 							<BucketView />
 						</Tab>
                         <Tab label="Core ID">
-                            <h1>This is the coreID</h1>
+                            <h1>This is the coreID{this.props.getCoreID(this.props.currentLocation)}</h1>
                         </Tab>
 					</Tabs>
                 }
