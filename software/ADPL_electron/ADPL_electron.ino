@@ -60,13 +60,15 @@ PinchValve pinchValve(DIR, STEP, SLEEP, UP, DOWN, RESET);
 
 // initialize some time counters
 unsigned long currentTime = 0;
+unsigned long WAIT_TIME = 0; // for batch testing
 unsigned long last_publish_time = 0;
+unsigned long ISITUP = 0;
 int temp_count = 1;
 int write_address = 0;
+SerialLogHandler logHandler;
 
 void setup() {
     Serial.begin(9600);
-    SerialLogHandler logHandler;
     pinchValve.position = EEPROM.get(write_address, pinchValve.position);
     Particle.variable("currentTime", currentTime);
     // count bucket tips on one-shot rise
@@ -78,10 +80,6 @@ void setup() {
     attachInterrupt(UP, up_pushed, FALLING);
     attachInterrupt(DOWN, down_pushed, FALLING);
     attachInterrupt(RESET, res_pushed, FALLING);
-
-    // initialize the pinch valve variables for raise and time tracking
-    pinchValve.isRaised = false;
-    pinchValve.lastTime = millis();
 }
 
 void loop() {
@@ -133,27 +131,39 @@ void loop() {
     }
 
     currentTime = millis();
-    if(((currentTime - pinchValve.lastTime) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (!pinchValve.isRaised)) {  // Gives all times in ms
+    if(((currentTime - WAIT_TIME) > ((3600*VOLUME)/OPTIMAL_FLOW)) && (ISITUP == 0)) {  // Gives all times in ms
         //  (3600 * VOLUME) *  (1 / OPTIMAL_FLOW)
-        Log.info("Designated amount of time has passed since last tip. Raising pinch valve...");
+        Log.info("Batch logic tripped.");
         pinchValve.up = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable
-        pinchValve.lastTime = millis();
-        pinchValve.isRaised = true;
+        WAIT_TIME = millis();
+        ISITUP = 1;
     }
-    if((bucket.tip) && (pinchValve.isRaised)){
+    Serial.print("BEFORE TIP CODE: ");
+    Serial.println(bucket.tip);
+    if((bucket.tip) && (ISITUP == 1)){
+        Log.info("Bucket tipped and valve is up.");
         pinchValve.down = true;
         pinchValve.resolution = BATCH_MOVEMENT; // 3mm , make variable!
         bucket.tip = false;
-        pinchValve.isRaised = false;
-        pinchValve.lastTime = millis();
+        ISITUP = 0;
+        WAIT_TIME = millis();
     }
-    if((bucket.tip) && (!pinchValve.isRaised)){
+    Serial.print("DURING TIP CODE: ");
+    Serial.println(bucket.tip);
+    if((bucket.tip) && (ISITUP == 0)){
+        Log.info("Bucket tipped and valve is down.");
         bucket.tip = false;
-        pinchValve.isRaised = false;
-        pinchValve.lastTime = millis();
+        ISITUP = 0;
+        WAIT_TIME = millis();
     }
+    Serial.print("AFTER TIP CODE: ");
+    Serial.println(bucket.tip);
 }
+
+////THIS IS THE NEW STUFF////////
+
+
 
 int read_temp(int temp_count) {
     switch (temp_count) {
@@ -212,23 +222,20 @@ int publish_data(int last_publish_time) {
 }
 
 void res_pushed(){
-    Log.warn("Reset button pushed. Resetting pinch valve...");
+    Log.warn("Reset button pushed.");
     pinchValve.position = 0.0;
-    pinchValve.lastTime = millis();
-    pinchValve.isRaised = false;
-    Log.info("Pinch valve reset.");
+    WAIT_TIME = millis();
+    ISITUP = 0;
 }
 
 void up_pushed() {
-    Log.warn("Up button pushed. Raising pinch valve..");
+    Log.warn("Up button pushed.");
     pinchValve.up = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Valve raised.");
 }
 
 void down_pushed(){
-    Log.warn("Down button pushed. Lowering pinch valve...");
+    Log.warn("Down button pushed.");
     pinchValve.down = true;
     pinchValve.resolution = PUSH_BUTTON_RESOLUTION;
-    Log.info("Valve lowered.");
 }
