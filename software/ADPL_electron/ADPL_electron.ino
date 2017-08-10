@@ -6,7 +6,7 @@
  *
  * LICENSE: Apache v2.0 (see LICENSE file)
  *
- * Copyright (c) 2015-2016 Mark Palmeri (Duke University)
+ * Copyright (c) 2015-2016 Mark Palmeri, Cal Nightingale (Duke University)
  */
 
 SYSTEM_THREAD(ENABLED);  // parallel user and system threads
